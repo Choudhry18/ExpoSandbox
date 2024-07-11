@@ -1,11 +1,11 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useState } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 
 export default function Scanner() {
     const [facing, setFacing] = useState('back');
     const [permission, requestPermission] = useCameraPermissions();
-
+    const [isScanning, setIsScanning] = useState(true);
     if(!permission){
         return <View />
     }
@@ -21,6 +21,25 @@ export default function Scanner() {
     function toggleCameraFacing() {
         setFacing(current => (current === 'back' ? 'front' : 'back'));
     }
+    function handleBarCodeScanned({ type, data, bounds }) {
+        if(isScanning){
+            setIsScanning(false)
+            console.log(`Barcode scanned! Type: ${type}, Data: ${data}`);
+            Alert.alert(
+              'Barcode Scanned',
+              `Data: ${data}`,
+              [
+                {
+                  text: 'OK',
+                  onPress : () => {
+                    setIsScanning(true)
+                  }
+                },
+              ],
+              { cancelable: false }
+            );
+        }
+      }
 
     return (
         <View style={styles.container}>
@@ -41,9 +60,7 @@ export default function Scanner() {
     );
 }
 
-function handleBarCodeScanned({ type, data, bounds }){
-    console.log(`Barcode scanned! Type: ${type}, Data: ${bounds}`);
-}
+
 const styles = StyleSheet.create({
     container: {
       flex: 1,
