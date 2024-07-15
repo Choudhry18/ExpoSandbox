@@ -1,6 +1,7 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { router } from 'expo-router'
 
 export default function Scanner() {
     const [facing, setFacing] = useState('back');
@@ -23,21 +24,12 @@ export default function Scanner() {
     }
     function handleBarCodeScanned({ type, data, bounds }) {
         if(isScanning){
-            setIsScanning(false)
-            console.log(`Barcode scanned! Type: ${type}, Data: ${data}`);
-            Alert.alert(
-              'Barcode Scanned',
-              `Data: ${data}`,
-              [
-                {
-                  text: 'OK',
-                  onPress : () => {
-                    setIsScanning(true)
-                  }
-                },
-              ],
-              { cancelable: false }
-            );
+          setIsScanning(false)
+          console.log(`Barcode scanned! Type: ${type}, Data: ${data}`);
+          router.push({
+            pathname: 'scan/view',
+            params: {out: data},
+          });
         }
       }
 
