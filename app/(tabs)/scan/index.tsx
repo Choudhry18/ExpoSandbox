@@ -1,10 +1,10 @@
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { router } from 'expo-router'
 
 export default function Scanner() {
-    const [facing, setFacing] = useState('back');
+    const [facing, setFacing] = useState<CameraType>('back');
     const [permission, requestPermission] = useCameraPermissions();
     const [isScanning, setIsScanning] = useState(true);
     if(!permission){
@@ -22,13 +22,13 @@ export default function Scanner() {
     function toggleCameraFacing() {
         setFacing(current => (current === 'back' ? 'front' : 'back'));
     }
-    function handleBarCodeScanned({ type, data, bounds }) {
+    function handleBarCodeScanned(event: { type: string , data: string}) {
         if(isScanning){
           setIsScanning(false)
-          console.log(`Barcode scanned! Type: ${type}, Data: ${data}`);
+          console.log(`Barcode scanned! Type: ${event.type}, Data: ${event.data}`);
           router.push({
             pathname: 'scan/view',
-            params: {out: data},
+            params: {out: event.data},
           });
         }
       }
