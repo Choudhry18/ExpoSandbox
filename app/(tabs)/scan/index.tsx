@@ -2,11 +2,16 @@ import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { router } from 'expo-router'
+import { useFocusEffect } from '@react-navigation/native'
 
 export default function Scanner() {
     const [facing, setFacing] = useState<CameraType>('back');
     const [permission, requestPermission] = useCameraPermissions();
     const [isScanning, setIsScanning] = useState(true);
+
+    useFocusEffect(() => {
+      setIsScanning(true)
+    })
     if(!permission){
         return <View />
     }
